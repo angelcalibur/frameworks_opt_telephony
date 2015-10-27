@@ -1623,8 +1623,13 @@ public class GSMPhone extends PhoneBase {
                 }
 
                 if (LOCAL_DEBUG) Rlog.d(LOG_TAG, "Baseband version: " + ar.result);
-                TelephonyManager.from(mContext).setBasebandVersionForPhone(getPhoneId(),
-                        (String)ar.result);
+
+                if (SubscriptionManager.isValidPhoneId(mPhoneId) &&
+                        !"".equals((String)ar.result)) {
+                    String prop = PROPERTY_BASEBAND_VERSION +
+                            ((mPhoneId == 0 ) ? "" : Integer.toString(mPhoneId));
+                    setSystemProperty(prop, (String)ar.result);
+                }
             break;
 
             case EVENT_GET_IMEI_DONE:
